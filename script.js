@@ -1,5 +1,3 @@
-const L = require('leaflet');
-
 // Create a map centered on NYC
 const map = L.map('map').setView([40.7128, -74.0060], 13);
 
