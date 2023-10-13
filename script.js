@@ -1,12 +1,13 @@
 // Create a map centered on NYC
 const map = L.map('map').setView([40.7128, -74.0060], 13);
 
-// Add a base map
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+// Add a modern Mapbox base map
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+    attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a> contributors',
+    id: 'mapbox/streets-v11',  // Choose a Mapbox style
 }).addTo(map);
 
-// Set a custom icon if the default icon is not loading
+// Set a minimalistic custom icon
 const myIcon = L.icon({
     iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png',
     iconSize: [38, 95],
@@ -20,7 +21,6 @@ function geocodeAndAddMarker(address) {
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             const latLng = L.latLng(data.results[0].geometry.lat, data.results[0].geometry.lng);
             L.marker(latLng, { icon: myIcon }).addTo(map);  // Use the custom icon when adding a marker
         });
