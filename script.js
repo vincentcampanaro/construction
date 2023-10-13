@@ -13,50 +13,19 @@ const myIcon = L.icon({
     iconSize: [38, 95],
 });
 
-// Define a delay function
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-// Function to geocode address and add marker to map
-async function geocodeAndAddMarker(address) {
-    const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
-
-    try {
-        // Introduce a delay to avoid hitting rate limits
-        await delay(1000);  // Adjust delay as needed
-
-        const response = await fetch(apiUrl, {
-            headers: { 'User-Agent': 'Construction/1.0 (vincentcampanaro@stern.nyu.edu)' }
-        });
-
-        // Check if response is okay
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data.length > 0) {
-            const latLng = L.latLng(data[0].lat, data[0].lon);
-            L.marker(latLng).addTo(map);
-        } else {
-            console.warn(`No results found for address: ${address}`);
-        }
-    } catch (error) {
-        console.error('Error fetching geocoding data:', error);
-    }
+// Function to add marker to map using project data
+function addMarker(project) {
+    const latLng = L.latLng(project.latitude, project.longitude);
+    L.marker(latLng, { icon: myIcon }).bindPopup(`<b>${project.name}</b><br>${project.building_address}`).addTo(map);
 }
 
 // Fetch data from NYC Open Data API
-fetch('https://data.cityofnewyork.us/resource/dzgh-ja44.json')
+fetch('https://data.cityofnewyork.us/resource/8586-3zfm.json')
     .then(response => response.json())
     .then(data => {
-        // Use Promise.all to wait for all geocoding requests to complete
-        return Promise.all(data.map(project => {
-            const address = `${project.city}, ${project.zip_code}`;
-            return geocodeAndAddMarker(address);
-        }));
+        data.forEach(project => {
+            addMarker(project);
+        });
     })
     .catch(error => {
         console.error('Error fetching project data:', error);
