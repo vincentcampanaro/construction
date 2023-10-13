@@ -6,17 +6,25 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
+// Function to geocode address and add marker to map
+function geocodeAndAddMarker(address) {
+    const apiKey = 'dabe268c136f4d0aa3b1f7c265dc0516';
+    const apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const latLng = L.latLng(data.results[0].geometry.lat, data.results[0].geometry.lng);
+            L.marker(latLng).addTo(map);
+        });
+}
+
 // Fetch data from NYC Open Data API
 fetch('https://data.cityofnewyork.us/resource/dzgh-ja44.json')
     .then(response => response.json())
     .then(data => {
-        console.log(data);  // Log data to console
         data.forEach(project => {
-            if (project.latitude && project.longitude) {  // Check if latitude and longitude are defined
-                const latLng = L.latLng(project.latitude, project.longitude);
-                L.marker(latLng).addTo(map);
-            } else {
-                console.warn('Missing latitude or longitude', project);
-            }
+            const address = `${project.city}, ${project.zip_code}`;
+            geocodeAndAddMarker(address);
         });
     });
