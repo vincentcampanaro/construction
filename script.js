@@ -39,6 +39,7 @@ let data;
 fetch('https://data.cityofnewyork.us/resource/8586-3zfm.json')
     .then(response => response.json())
     .then(fetchedData => {
+        console.log(fetchedData);  // Log the fetched data
         data = fetchedData;
         data.forEach(project => {
             addMarker(project);
