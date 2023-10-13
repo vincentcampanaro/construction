@@ -2,7 +2,7 @@
 const map = L.map('map').setView([40.7128, -74.0060], 13);
 
 // Add a modern Mapbox base map
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmluY2VudGNhbXBhbmFybyIsImEiOiJjbG5vMDFnaW0wOWZrMmxxZGRhZGpxc2poIn0.CAmYZ_D7znuGjGsEMpVtsA', {
     attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a> contributors',
     id: 'mapbox/streets-v11',  // Choose a Mapbox style
 }).addTo(map);
