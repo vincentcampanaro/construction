@@ -10,9 +10,13 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 fetch('https://data.cityofnewyork.us/resource/dzgh-ja44.json')
     .then(response => response.json())
     .then(data => {
+        console.log(data);  // Log data to console
         data.forEach(project => {
-            // Assume each project has a latitude and longitude property
-            const latLng = L.latLng(project.latitude, project.longitude);
-            L.marker(latLng).addTo(map);
+            if (project.latitude && project.longitude) {  // Check if latitude and longitude are defined
+                const latLng = L.latLng(project.latitude, project.longitude);
+                L.marker(latLng).addTo(map);
+            } else {
+                console.warn('Missing latitude or longitude', project);
+            }
         });
     });
