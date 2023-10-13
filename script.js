@@ -9,10 +9,15 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 // Function to add marker to map using project data
 function addMarker(project) {
-    const latLng = L.latLng(project.latitude, project.longitude);
-    L.circleMarker(latLng, { radius: 5, color: 'blue', fillColor: 'blue', fillOpacity: 1 })
-        .bindPopup(`<b>${project.name}</b><br>${project.building_address}`)
-        .addTo(map);
+    // Check if latitude and longitude are defined
+    if (project.latitude && project.longitude) {
+        const latLng = L.latLng(project.latitude, project.longitude);
+        L.circleMarker(latLng, { radius: 5, color: 'blue', fillColor: 'blue', fillOpacity: 1 })
+            .bindPopup(`<b>${project.name}</b><br>${project.building_address}`)
+            .addTo(map);
+    } else {
+        console.warn('Missing latitude or longitude:', project);
+    }
 }
 
 // Fetch data from NYC Open Data API
