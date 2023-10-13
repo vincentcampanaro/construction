@@ -35,9 +35,11 @@ function searchGoogle(name, address) {
 }
 
 // Fetch data from NYC Open Data API
+let data;
 fetch('https://data.cityofnewyork.us/resource/8586-3zfm.json')
     .then(response => response.json())
-    .then(data => {
+    .then(fetchedData => {
+        data = fetchedData;
         data.forEach(project => {
             addMarker(project);
         });
@@ -45,3 +47,25 @@ fetch('https://data.cityofnewyork.us/resource/8586-3zfm.json')
     .catch(error => {
         console.error('Error fetching project data:', error);
     });
+
+// Add Leaflet.heat library
+const heat = L.heatLayer([], {radius: 25}).addTo(map);
+
+function toggleHeatmap() {
+    const heatmapData = data.map(project => [project.latitude, project.longitude]);
+    heat.setLatLngs(heatmapData);
+}
+
+document.getElementById('heatmapButton').addEventListener('click', toggleHeatmap);
+
+// Choropleth map toggle function placeholder (actual implementation requires GeoJSON data)
+let choroplethLayer;
+function toggleChoropleth() {
+    if (choroplethLayer) {
+        choroplethLayer.remove();
+    } else {
+        // Placeholder for GeoJSON data and choropleth layer creation
+    }
+}
+
+document.getElementById('choroplethButton').addEventListener('click', toggleChoropleth);
