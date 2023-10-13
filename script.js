@@ -15,14 +15,22 @@ const myIcon = L.icon({
 
 // Function to geocode address and add marker to map
 function geocodeAndAddMarker(address) {
-    const apiKey = 'dabe268c136f4d0aa3b1f7c265dc0516';
-    const apiUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}`;
+    const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
 
-    fetch(apiUrl)
+    fetch(apiUrl, {
+        headers: { 'User-Agent': 'YourAppName/1.0 (your-email@example.com)' }  // Replace with your app name and email
+    })
         .then(response => response.json())
         .then(data => {
-            const latLng = L.latLng(data.results[0].geometry.lat, data.results[0].geometry.lng);
-            L.marker(latLng, { icon: myIcon }).addTo(map);  // Use the custom icon when adding a marker
+            if (data.length > 0) {
+                const latLng = L.latLng(data[0].lat, data[0].lon);
+                L.marker(latLng).addTo(map);
+            } else {
+                console.warn(`No results found for address: ${address}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching geocoding data:', error);
         });
 }
 
