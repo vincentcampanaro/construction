@@ -7,16 +7,12 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     id: 'mapbox/streets-v11',  // Choose a Mapbox style
 }).addTo(map);
 
-// Set a minimalistic custom icon
-const myIcon = L.icon({
-    iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-green.png',
-    iconSize: [38, 95],
-});
-
 // Function to add marker to map using project data
 function addMarker(project) {
     const latLng = L.latLng(project.latitude, project.longitude);
-    L.marker(latLng, { icon: myIcon }).bindPopup(`<b>${project.name}</b><br>${project.building_address}`).addTo(map);
+    L.circleMarker(latLng, { radius: 5, color: 'blue', fillColor: 'blue', fillOpacity: 1 })
+        .bindPopup(`<b>${project.name}</b><br>${project.building_address}`)
+        .addTo(map);
 }
 
 // Fetch data from NYC Open Data API
