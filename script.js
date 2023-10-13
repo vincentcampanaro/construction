@@ -13,11 +13,25 @@ function addMarker(project) {
     if (project.latitude && project.longitude) {
         const latLng = L.latLng(project.latitude, project.longitude);
         L.circleMarker(latLng, { radius: 5, color: 'blue', fillColor: 'blue', fillOpacity: 1 })
-            .bindPopup(`<b>${project.name}</b><br>${project.building_address}`)
+            .bindPopup(`
+                <b>${project.name}</b><br>
+                ${project.building_address}<br>
+                ${project.city}, ${project.zip_code}<br>
+                Project Description: ${project.projdesc}<br>
+                Construction Award: ${project.award}<br>
+                Project Type: ${project.consttype}<br>
+                <button onclick="searchGoogle('${project.name}', '${project.building_address}')">Search with Google</button>
+            `)
             .addTo(map);
     } else {
         console.warn('Missing latitude or longitude:', project);
     }
+}
+
+// Function to search Google
+function searchGoogle(name, address) {
+    const query = encodeURIComponent(`${name} ${address}`);
+    window.open(`https://www.google.com/search?q=${query}`, '_blank');
 }
 
 // Fetch data from NYC Open Data API
