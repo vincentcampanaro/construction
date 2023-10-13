@@ -49,14 +49,21 @@ fetch('https://data.cityofnewyork.us/resource/8586-3zfm.json')
     });
 
 // Add Leaflet.heat library
-const heat = L.heatLayer([], {radius: 25}).addTo(map);
+const heat = L.heatLayer([], {radius: 25});
+heat.addTo(map);
 
 // Function to toggle heatmap
 function toggleHeatmap() {
-    const heatmapData = data
-        .filter(project => project.latitude && project.longitude)
-        .map(project => [project.latitude, project.longitude]);
-    heat.setLatLngs(heatmapData);
+    // Toggle the heatmap layer on and off
+    if (map.hasLayer(heat)) {
+        map.removeLayer(heat);
+    } else {
+        const heatmapData = data
+            .filter(project => project.latitude && project.longitude)
+            .map(project => [project.latitude, project.longitude]);
+        heat.setLatLngs(heatmapData);
+        heat.addTo(map);
+    }
 }
 
 document.getElementById('heatmapButton').addEventListener('click', toggleHeatmap);
@@ -66,8 +73,10 @@ let choroplethLayer;
 function toggleChoropleth() {
     if (choroplethLayer) {
         choroplethLayer.remove();
+        choroplethLayer = null;  // Reset the choroplethLayer variable
     } else {
         // Placeholder for GeoJSON data and choropleth layer creation
+        alert('Choropleth feature not implemented');
     }
 }
 
