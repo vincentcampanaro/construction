@@ -61,20 +61,27 @@ const cfg = {
 const heatmapLayer = new HeatmapOverlay(cfg);
 heatmapLayer.addTo(map);
 
+// Define heatmapData outside the function so it's only created once
+const heatmapData = {
+    max: 8,
+    data: []
+};
+
 // Function to toggle heatmap
 function toggleHeatmap() {
+    // If the heatmapData.data array is empty, populate it with data
+    if (heatmapData.data.length === 0) {
+        heatmapData.data = data
+            .filter(project => project.latitude && project.longitude)
+            .map(project => {
+                return { lat: project.latitude, lng: project.longitude, count: 1 };
+            });
+    }
+
     // Toggle the heatmap layer on and off
     if (map.hasLayer(heatmapLayer)) {
         map.removeLayer(heatmapLayer);
     } else {
-        const heatmapData = {
-            max: 8,
-            data: data
-                .filter(project => project.latitude && project.longitude)
-                .map(project => {
-                    return { lat: project.latitude, lng: project.longitude, count: 1 };
-                })
-        };
         heatmapLayer.setData(heatmapData);
         heatmapLayer.addTo(map);
     }
