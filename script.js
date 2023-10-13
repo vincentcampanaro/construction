@@ -13,33 +13,51 @@ const myIcon = L.icon({
     iconSize: [38, 95],
 });
 
+// Define a delay function
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Function to geocode address and add marker to map
-function geocodeAndAddMarker(address) {
+async function geocodeAndAddMarker(address) {
     const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
 
-    fetch(apiUrl, {
-        headers: { 'User-Agent': 'Construction/1.0 (vincentcampanaro@stern.nyu.edu)' }
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.length > 0) {
-                const latLng = L.latLng(data[0].lat, data[0].lon);
-                L.marker(latLng).addTo(map);
-            } else {
-                console.warn(`No results found for address: ${address}`);
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching geocoding data:', error);
+    try {
+        // Introduce a delay to avoid hitting rate limits
+        await delay(1000);  // Adjust delay as needed
+
+        const response = await fetch(apiUrl, {
+            headers: { 'User-Agent': 'Construction/1.0 (vincentcampanaro@stern.nyu.edu)' }
         });
+
+        // Check if response is okay
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.length > 0) {
+            const latLng = L.latLng(data[0].lat, data[0].lon);
+            L.marker(latLng).addTo(map);
+        } else {
+            console.warn(`No results found for address: ${address}`);
+        }
+    } catch (error) {
+        console.error('Error fetching geocoding data:', error);
+    }
 }
 
 // Fetch data from NYC Open Data API
 fetch('https://data.cityofnewyork.us/resource/dzgh-ja44.json')
     .then(response => response.json())
     .then(data => {
-        data.forEach(project => {
+        // Use Promise.all to wait for all geocoding requests to complete
+        return Promise.all(data.map(project => {
             const address = `${project.city}, ${project.zip_code}`;
-            geocodeAndAddMarker(address);
-        });
+            return geocodeAndAddMarker(address);
+        }));
+    })
+    .catch(error => {
+        console.error('Error fetching project data:', error);
     });
