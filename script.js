@@ -51,8 +51,11 @@ fetch('https://data.cityofnewyork.us/resource/8586-3zfm.json')
 // Add Leaflet.heat library
 const heat = L.heatLayer([], {radius: 25}).addTo(map);
 
+// Function to toggle heatmap
 function toggleHeatmap() {
-    const heatmapData = data.map(project => [project.latitude, project.longitude]);
+    const heatmapData = data
+        .filter(project => project.latitude && project.longitude)
+        .map(project => [project.latitude, project.longitude]);
     heat.setLatLngs(heatmapData);
 }
 
