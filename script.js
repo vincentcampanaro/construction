@@ -48,33 +48,20 @@ fetch('https://data.cityofnewyork.us/resource/8586-3zfm.json')
         console.error('Error fetching project data:', error);
     });
 
-// Initialize heatmap layer
-const cfg = {
-    radius: 25,
-    maxOpacity: .8,
-    scaleRadius: true,
-    useLocalExtrema: true,
-    latField: 'lat',
-    lngField: 'lng',
-    valueField: 'count'
-};
-const heatmapLayer = new HeatmapOverlay(cfg);
+// Define heatmap layer
+const heatmapLayer = L.heatLayer([], { radius: 25, blur: 15 });
 heatmapLayer.addTo(map);
 
 // Define heatmapData outside the function so it's only created once
-const heatmapData = {
-    max: 8,
-    data: []
-};
+const heatmapData = [];
 
 // Function to toggle heatmap
 function toggleHeatmap() {
-    // If the heatmapData.data array is empty, populate it with data
-    if (heatmapData.data.length === 0) {
-        heatmapData.data = data
-            .filter(project => project.latitude && project.longitude)
-            .map(project => {
-                return { lat: project.latitude, lng: project.longitude, count: 1 };
+    // If the heatmapData array is empty, populate it with data
+    if (heatmapData.length === 0) {
+        data.filter(project => project.latitude && project.longitude)
+            .forEach(project => {
+                heatmapData.push([project.latitude, project.longitude]);
             });
     }
 
@@ -82,7 +69,7 @@ function toggleHeatmap() {
     if (map.hasLayer(heatmapLayer)) {
         map.removeLayer(heatmapLayer);
     } else {
-        heatmapLayer.setData(heatmapData);
+        heatmapLayer.setLatLngs(heatmapData);
         heatmapLayer.addTo(map);
     }
 }
