@@ -18,7 +18,7 @@ function geocodeAndAddMarker(address) {
     const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
 
     fetch(apiUrl, {
-        headers: { 'User-Agent': 'YourAppName/1.0 (your-email@example.com)' }  // Replace with your app name and email
+        headers: { 'User-Agent': 'Construction/1.0 (vincentcampanaro@stern.nyu.edu)' }
     })
         .then(response => response.json())
         .then(data => {
