@@ -61,8 +61,11 @@ function toggleHeatmap() {
         const heatmapData = data
             .filter(project => project.latitude && project.longitude)
             .map(project => [project.latitude, project.longitude]);
-        heat.setLatLngs(heatmapData);
-        heat.addTo(map);
+        if (heatmapData.length > 0) {  // Check if heatmapData is not empty
+            heat = L.heatLayer(heatmapData, { radius: 25 }).addTo(map);  // Reinitialize heat layer
+        } else {
+            console.warn('No data available for heatmap');
+        }
     }
 }
 
