@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     mapboxgl.accessToken = 'pk.eyJ1IjoidmluY2VudGNhbXBhbmFybyIsImEiOiJjbG5vMDFnaW0wOWZrMmxxZGRhZGpxc2poIn0.CAmYZ_D7znuGjGsEMpVtsA';
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/dark-v11',
+        style: 'mapbox://styles/mapbox/streets-v11',
         center: [-74.0060, 40.7128],
         zoom: 13
     });
@@ -71,6 +71,25 @@ document.addEventListener("DOMContentLoaded", function() {
                         ],
                     }
                 }, 'waterway-label');
+
+                // Adding markers
+                geojson.features.forEach(feature => {
+                    const coordinates = feature.geometry.coordinates;
+                    const properties = feature.properties;
+                    const html = `
+                        <b>${properties.name}</b><br>
+                        ${properties.building_address}<br>
+                        ${properties.city}, ${properties.zip_code}<br>
+                        Project Description: ${properties.projdesc}<br>
+                        Construction Award: ${properties.award}<br>
+                        Project Type: ${properties.consttype}<br>
+                        <button onclick="searchGoogle('${properties.name}', '${properties.building_address}')">Search with Google</button>
+                    `;
+                    new mapboxgl.Marker()
+                        .setLngLat(coordinates)
+                        .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(html))
+                        .addTo(map);
+                });
             });
     });
 
@@ -127,3 +146,8 @@ document.addEventListener("DOMContentLoaded", function() {
         alert('Choropleth feature not implemented');
     });
 });
+
+function searchGoogle(name, address) {
+    const query = encodeURIComponent(`${name} ${address}`);
+    window.open(`https://www.google.com/search?q=${query}`, '_blank');
+}
