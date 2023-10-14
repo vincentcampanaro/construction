@@ -1,11 +1,14 @@
-// Create a map centered on NYC
-const map = L.map('map').setView([40.7128, -74.0060], 13);
+// Ensure the DOM is fully loaded before running the script
+document.addEventListener("DOMContentLoaded", function() {
 
-// Add a modern Mapbox base map
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmluY2VudGNhbXBhbmFybyIsImEiOiJjbG5vMDFnaW0wOWZrMmxxZGRhZGpxc2poIn0.CAmYZ_D7znuGjGsEMpVtsA', {
-    attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a> contributors',
-    id: 'mapbox/streets-v11',  // Choose a Mapbox style
-}).addTo(map);
+    // Create a map centered on NYC
+    const map = L.map('map').setView([40.7128, -74.0060], 13);
+
+    // Add a modern Mapbox base map
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidmluY2VudGNhbXBhbmFybyIsImEiOiJjbG5vMDFnaW0wOWZrMmxxZGRhZGpxc2poIn0.CAmYZ_D7znuGjGsEMpVtsA', {
+        attribution: '&copy; <a href="https://www.mapbox.com/">Mapbox</a> contributors',
+        id: 'mapbox/streets-v11',  // Choose a Mapbox style
+    }).addTo(map);
 
 // Function to add marker to map using project data
 function addMarker(project) {
@@ -80,7 +83,8 @@ var heatmapData = {
 };
 
 // Define heatmap layer
-const heatmapLayer = new HeatmapOverlay(cfg).addTo(map);
+const heatmapLayer = new HeatmapOverlay(cfg);
+heatmapLayer.addTo(map);
 
 // Populate heatmap data object from project data
 data.filter(project => project.latitude && project.longitude)
