@@ -42,6 +42,21 @@ fetch('https://data.cityofnewyork.us/resource/8586-3zfm.json')
                 console.warn('Missing latitude or longitude:', project);
             }
         });
+
+        // Moved inside fetch callback
+        // Populate heatmap data object from project data
+        data.filter(project => project.latitude && project.longitude)
+            .forEach(project => {
+                heatmapData.data.push({
+                    lat: project.latitude,
+                    lng: project.longitude,
+                    count: 1
+                });
+            });
+
+        // Set heatmap data
+        heatmapLayer.setData(heatmapData);
+
     })
     .catch(error => {
         console.error('Error fetching project data:', error);
